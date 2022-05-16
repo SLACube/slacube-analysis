@@ -8,7 +8,7 @@ def get_n_blocks(fpath, buf_size):
         n_blocks = int(np.ceil(len(pkts) / buf_size))
     return n_blocks
 
-def build_event(fpath, buf_size):
+def build_event(fpath, buf_size, window=1820//2):
     with h5py.File(fpath, 'r') as f:
         pkts = f['packets']
         n_blocks = int(np.ceil(len(pkts) / buf_size))
@@ -29,7 +29,7 @@ def build_event(fpath, buf_size):
             print('No timestamp packet found')
             return
         
-        builder = SymmetricWindowEventBuilder()
+        builder = SymmetricWindowEventBuilder(window=window)
         last_unix_ts = first_unix_ts
 
         for i_blk in range(n_blocks):
