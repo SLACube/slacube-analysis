@@ -82,9 +82,15 @@ def select_tracks(events, timestamps, pix_loc, adc2charge, detprop, cfg):
             t = dt[mask]
             t -= t.min()
             z -= z.min()
+
+            if t.max() < cfg_trk.get('min_dt', 0):
+                continue
+
+            if z.max() < cfg_trk.get('min_dz', 0):
+                continue
+
             seg_ids = output['segment_ids']
             trk = np.rec.fromarrays(
-                #[x, y, z, ch_uids[mask], adcs, charges, t, seg_ids],
                 [x, y, z, ch_uids[mask], adcs, charges, evt['timestamp'][mask], seg_ids],
                 names='x,y,z,uid,adc,q,dt,segment_id'
             )
