@@ -2,8 +2,8 @@ import yaml
 import numpy as np
 
 MAX_UID = 100 * 64
-def load_geom():
-    with open('/sdf/group/neutrino/larpix/etc/layouts/layout-2.4.0.yaml', 'r') as f:
+def load_geom(fpath):
+    with open(fpath, 'r') as f:
         geo = yaml.safe_load(f)
     
     chip_pix = dict([(chip_id, pix) for chip_id,pix in geo['chips']])
