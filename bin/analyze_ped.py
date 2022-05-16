@@ -12,7 +12,7 @@ def main(fpath, outdir='./', progress=False):
     with h5py.File(fpath, 'r') as f:
         output = analyze_pedestal(f['packets'], show_progress=progress)
 
-    ofname = os.path.splitext(os.path.basename(fpath))[0] + '__ped.h5'
+    ofname = os.path.basename(fpath).split('___')[0] + '__ped.h5'
     outpath = os.path.join(outdir, ofname)
     print('Saving to', outpath)
 
