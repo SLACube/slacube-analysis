@@ -55,6 +55,23 @@ def strptime_from_file(fpath, tz):
 
     return file_ts
 
+def get_pkts_livetime(pkts, buf_size=1000):
+    n_blocks = int(np.ceil(len(pkts) / buf_size))
+    t0, t1 = 0., 0.
+    for i in range(n_blocks):
+        blks = pkts[i*buf_size:(i+1)*buf_size]
+        ts = blks[blks['packet_type'] == 4]['timestamp']
+        if len(ts) > 0:
+            t0 = ts.min()
+            break
+    for i in range(n_blocks):
+        blks = pkts[-(i+1)*buf_size:-i*buf_size]
+        ts = blks[blks['packet_type'] == 4]['timestamp']
+        if len(ts) > 0:
+            t1 = ts.max()
+            break
+    return t1 - t0
+
 def group_by_time(pkts, duration):
     unix_ts = pkts[pkts['packet_type'] == 4]['timestamp']
     idx_pkt4 = np.where(pkts['packet_type'] == 4)[0]
