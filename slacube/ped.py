@@ -1,11 +1,13 @@
 import h5py
 import numpy as np
 
-from tqdm import tqdm
+from tqdm.auto import tqdm
 from slacube.utils import filter_data_packets, group_by_time
 from slacube.geom import MAX_UID
 
-def analyze_pedestal(pkts, trunc=True, return_hist=False, show_progress=False):
+def analyze_pedestal(
+        pkts, mincnt=5, trunc=True, return_hist=False, show_progress=False
+):
     mask, uids = filter_data_packets(pkts, return_uids=True)
     data_pkts = pkts[mask]
     
@@ -17,7 +19,7 @@ def analyze_pedestal(pkts, trunc=True, return_hist=False, show_progress=False):
 
     for uid in tqdm(np.unique(uids), disable=not show_progress):
         mask = uids == uid
-        if np.count_nonzero(mask) < 5:
+        if np.count_nonzero(mask) < mincnt:
             continue
             
         data = data_pkts[mask]
