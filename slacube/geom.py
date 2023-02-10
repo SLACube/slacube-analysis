@@ -27,3 +27,12 @@ def load_layout_np(fpath=None):
         assert fpath, 'missing layout file'
 
     return np.load(fpath)
+
+def encode_channel_id(chip_id, chip_ch):
+    uid = (chip_id - 11 << 6) + chip_ch
+    return uid
+
+def decode_channel_id(uid):
+    chip_id, chip_ch = divmod(uuid, 64)
+    chip_id += 11
+    return chip_id, chip_ch
