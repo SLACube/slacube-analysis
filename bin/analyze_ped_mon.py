@@ -17,7 +17,7 @@ def main(fpath, duration, outdir='./', progress=False):
             show_progress=progress
         )
 
-    ofname = os.path.splitext(os.path.basename(fpath))[0] + '__ped_mon.h5'
+    ofname = os.path.basename(fpath).split('___')[0] + '__ped_mon.h5'
     outpath = os.path.join(outdir, ofname)
     print('Saving to', outpath)
 
