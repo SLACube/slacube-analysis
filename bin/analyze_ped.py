@@ -3,6 +3,8 @@
 import os
 import fire
 import h5py
+import numpy as np
+import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -47,7 +49,23 @@ def save_hdf(ped, outpath):
     with h5py.File(outpath, 'w') as f:
         f.create_dataset('pedestal', data=ped, compression='gzip')
 
-def main(fpath, outdir='./', save='hdf,png', progress=False):
+def save_csv(ped, outpath):
+    mask = ped['active']
+    uid = np.where(mask)[0]
+    chip, ch = np.divmod(uid, 64)
+    chip += 11
+
+    dtype=[('chip', int), ('ch', int), ('mean', float), ('std', float)]
+    arr = np.empty(len(uid), dtype=dtype)
+    arr['chip'] = chip
+    arr['ch'] = ch
+    arr['mean'] = ped[mask]['mean']
+    arr['std'] = ped[mask]['std']
+
+    df = pd.DataFrame(arr)
+    df.to_csv(outpath, index=False)
+
+def main(fpath, outdir='./', save=('hdf','png'), progress=False):
 
     print('Processing', fpath)
     with h5py.File(fpath, 'r') as f:
@@ -57,9 +75,11 @@ def main(fpath, outdir='./', save='hdf,png', progress=False):
     outpath = os.path.join(outdir, ofname)
     title = os.path.basename(fpath).split('__')[0]
 
-    for ftype in save.lower().split(','):
+    for ftype in save:
         if ftype == 'hdf':
             save_hdf(ped, outpath+'.h5')
+        elif ftype == 'csv':
+            save_csv(ped, outpath+'.csv')
         elif ftype == 'png':
             make_plot(ped, outpath+'.png', title)
         else:
