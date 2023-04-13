@@ -68,7 +68,8 @@ def main(indir, title='SLACube Ped. Monitor', progress=False):
 
     fig.tight_layout()
 
-    fig.savefig(f'ped_mon_{int(time.time())}.png')
+    timestamp = hex(int(time.time()))[2:]
+    fig.savefig(f'ped_mon_{timestamp}.png')
 
 if __name__ == '__main__':
     fire.Fire(main)
