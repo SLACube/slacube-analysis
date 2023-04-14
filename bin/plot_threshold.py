@@ -13,8 +13,15 @@ from glob import glob
 from collections import defaultdict
 from slacube.geom import load_layout_np
 
-def analyze_cfg(files, vdda):
+def analyze_cfg(files, vdda, cryo):
     pix_loc = load_layout_np()
+
+    if cryo:
+        trim_scale = 2.34
+        offset = 465
+    else:
+        trim_scale = 1.45
+        offset = 210
 
     output = defaultdict(list)
     for fpath in files:
@@ -24,8 +31,8 @@ def analyze_cfg(files, vdda):
         reg = cfg['register_values']
         
         threshold = vdda / 256. * reg['threshold_global']
-        threshold += 465
-        threshold += np.array(reg['pixel_trim_dac'], dtype=float) * 2.34
+        threshold += offset
+        threshold += np.array(reg['pixel_trim_dac'], dtype=float) * trim_scale
         
         uids = (reg['chip_id'] - 11 << 6) + np.arange(64)
         loc = pix_loc[uids]
@@ -72,14 +79,17 @@ def make_plot(output, outfile, title):
 
     fig.savefig(outfile)
 
-def main(cfg_dir, vdda, outdir='./', save='png', title=None, progress=False):
+def main(
+        cfg_dir, vdda, outdir='./', save='png', 
+        cryo=False, title=None, progress=False
+):
     print('Analyzing thresholds from', cfg_dir)
 
     files = glob(os.path.join(cfg_dir, 'config-*.json'))
     if len(files) == 0:
         raise FileNotFoundError('No config file found', cfg_dir)
 
-    output = analyze_cfg(files, vdda)
+    output = analyze_cfg(files, vdda, cryo)
 
     label = os.path.basename(cfg_dir)
     if title is None:
