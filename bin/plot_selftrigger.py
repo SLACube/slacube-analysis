@@ -91,7 +91,7 @@ def main(fpath, outdir='./', save='png', subtitle=None, progress=False):
         rate = cnts / lifetime
         ped = analyze_pedestal(pkts, trunc=False, show_progress=progress)
 
-    ofname = os.path.basename(fpath).split('___')[0] + '__selftrig'
+    ofname = os.path.splitext(os.path.basename(fpath))[0] + '__selftrig'
     outpath = os.path.join(outdir, ofname)
     title = os.path.basename(fpath).split('__')[0]
     if subtitle is not None:
