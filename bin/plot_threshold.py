@@ -57,10 +57,10 @@ def make_plot(output, outfile, title):
     value = output['threshold'][mask]
     #value = output['ch_mask']
 
-    fig, axes = plt.subplots(1,2, figsize=(16,6))
+    fig, axes = plt.subplots(1,2, figsize=(12,5))
 
     ax = axes[0]
-    sc = ax.scatter(x, y, c=value, marker='o', s=12, cmap='viridis')
+    sc = ax.scatter(x, y, c=value, marker='o', s=4, cmap='viridis')
 
     ax.set_aspect('equal')
     ax.set_xlabel('x [mm]')
@@ -68,7 +68,11 @@ def make_plot(output, outfile, title):
     fig.colorbar(sc, ax=ax, label='Threshold [mV]')
 
     ax = axes[1]
-    ax.hist(value, bins=40, range=(650, 850), histtype='stepfilled')
+    ax.hist(
+            value, bins=20, 
+            range=(value.min(), value.max()), 
+            histtype='stepfilled'
+    )
     ax.set_ylabel('Counts')
     ax.set_xlabel('Threshold [mV]')
     ax.xaxis.tick_bottom()
