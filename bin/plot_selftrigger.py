@@ -20,9 +20,9 @@ def make_plot(ped, rate, ch_ids, outfile, title):
 
     pix_loc = load_layout_np()
 
-    fig, axes = plt.subplots(3, 1, figsize=(8, 18), sharex=True, sharey=True)
+    fig, axes = plt.subplots(3, 1, figsize=(6, 12), sharex=True, sharey=True)
 
-    kwargs = dict(marker='o', s=15, cmap='viridis')
+    kwargs = dict(marker='o', s=5, cmap='viridis')
 
     mask = ped['active']
     x, y = pix_loc[mask].T
@@ -55,7 +55,7 @@ def make_plot(ped, rate, ch_ids, outfile, title):
         ax.set_ylabel('y [mm]')
         axes[-1].set_xlabel('x [mm]')
 
-    fig.suptitle(title)
+    fig.suptitle(title, fontsize='medium')
     fig.tight_layout()
 
     fig.savefig(outfile)

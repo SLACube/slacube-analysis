@@ -18,9 +18,9 @@ def make_plot(ped, outfile, title):
 
     pix_loc = load_layout_np()
 
-    fig, axes = plt.subplots(2, 1, figsize=(8, 12), sharex=True, sharey=True)
+    fig, axes = plt.subplots(2, 1, figsize=(6, 10), sharex=True, sharey=True)
 
-    kwargs = dict(marker='o', s=15, cmap='viridis')
+    kwargs = dict(marker='o', s=5, cmap='viridis')
 
     mask = ped['active']
     x, y = pix_loc[mask].T
@@ -39,7 +39,7 @@ def make_plot(ped, outfile, title):
         ax.set_ylabel('y [mm]')
         axes[-1].set_xlabel('x [mm]')
 
-    fig.suptitle(title)
+    fig.suptitle(title, fontsize='medium')
     fig.tight_layout()
 
     fig.savefig(outfile)
@@ -71,7 +71,8 @@ def main(fpath, outdir='./', save=('hdf','png'), progress=False):
     with h5py.File(fpath, 'r') as f:
         ped = analyze_pedestal(f['packets'], show_progress=progress)
 
-    ofname = os.path.basename(fpath).split('___')[0] + '__ped'
+    ofname = os.path.basename(fpath).split('___')[0] 
+    ofname = os.path.splitext(ofname)[0] + '__ped'
     outpath = os.path.join(outdir, ofname)
     title = os.path.basename(fpath).split('__')[0]
 
